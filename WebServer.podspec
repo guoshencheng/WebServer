@@ -10,18 +10,18 @@
 Pod::Spec.new do |s|
   s.name             = "WebServer"
   s.version          = "0.1.0"
-  s.summary          = "A short description of WebServer."
+  s.summary          = "winchance's WebServer"
   s.description      = <<-DESC
                        An optional longer description of WebServer
 
                        * Markdown format.
                        * Don't worry about the indent, we strip it!
                        DESC
-  s.homepage         = "http://10.0.2.217:7777/shenchengguo/WebServer"
+  s.homepage         = "https://github.com/guoshencheng/WebServer.git"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "guoshencheng" => "648772021@qq.com" }
-  s.source           = { :git => "http://10.0.2.217:7777/shenchengguo/WebServer.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/guoshencheng/WebServer.git", :tag => s.version.to_s }
   # s.social_media_url = 'guoshencheng.github.io'
 
   s.platform     = :ios, '7.0'
