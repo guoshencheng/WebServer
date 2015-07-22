@@ -10,6 +10,14 @@
 
 @interface NSDictionary (WebServer)
 
+/**
+ * Transform NSDictionary to JSonString
+ **/
 - (NSString *)toJsonString;
+
+/**
+ * Package self with ruled format
+ **/
+- (NSDictionary *)toWebServerParameters;
 
 @end

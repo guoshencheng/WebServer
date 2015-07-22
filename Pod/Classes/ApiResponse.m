@@ -10,22 +10,7 @@
 
 @implementation ApiResponse
 
-+ (instancetype)getResponseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error {
-    ApiResponse *response = [[self alloc] init];
-    if (error || ![dictionary isKindOfClass:[NSDictionary class]]) {
-        
-    } else  {
-        response.version = [[dictionary objectForKey:@"version"] floatValue];
-        response.encoding = [dictionary objectForKey:@"encoding"];
-        response.errorCode = [dictionary objectForKey:@"errorCode"];
-        response.errorMsg = [dictionary objectForKey:@"errorMsg"];
-        NSDictionary *feed = [dictionary objectForKey:@"feed"];
-        response.entities = [feed objectForKey:@"entities"];
-    }
-    return response;
-}
-
-+ (instancetype)postResponseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error {
++ (instancetype)responseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error {
     ApiResponse *response = [[self alloc] init];
     if (error || ![dictionary isKindOfClass:[NSDictionary class]]) {
         
@@ -35,6 +20,10 @@
         response.errorCode = [dictionary objectForKey:@"errorCode"];
         response.errorMsg = [dictionary objectForKey:@"errorMsg"];
         response.entity = [dictionary objectForKey:@"entity"];
+        if (!response.entity) {
+            NSDictionary *feed = [dictionary objectForKey:@"feed"];
+            response.entities = [feed objectForKey:@"entities"];
+        }
     }
     return response;
 }

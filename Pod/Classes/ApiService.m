@@ -37,7 +37,7 @@
 
 - (void)sendReLoginWithRequest:(ApiRequest *)apiRequest {
     [self sendPostRequest:[ApiRequest requestForRelogin] withCompletion:^(id data, NSError *error) {
-        ApiResponse *apiResponse = [ApiResponse postResponseWithDictionary:data error:error];
+        ApiResponse *apiResponse = [ApiResponse responseWithDictionary:data error:error];
         if ([apiResponse success]) {
             [self sendRequest:apiRequest];
         }
@@ -46,12 +46,7 @@
 
 - (void)sendRequest:(ApiRequest *)apiRequest {
     [self sendRequest:apiRequest withCompletion:^(id dictionary, NSError *error) {
-        ApiResponse *apiResponse;
-        if (apiRequest.method == ApiRequestMethodGet) {
-            apiResponse = [ApiResponse getResponseWithDictionary:dictionary error:error];
-        } else {
-            apiResponse = [ApiResponse postResponseWithDictionary:dictionary error:error];
-        }
+        ApiResponse *apiResponse = [ApiResponse responseWithDictionary:dictionary error:error];
         if ([apiResponse sessionTimeout]) {
             [self sendReLoginWithRequest:apiRequest];
         } else {
@@ -89,8 +84,8 @@
     manger.requestSerializer = [AFHTTPRequestSerializer serializer];
     manger.responseSerializer = [AFHTTPResponseSerializer serializer];
     [manger POST:apiRequest.url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        for (int i = 0; i < apiRequest.images.count; i ++) {
-            [formData appendPartWithFormData:[apiRequest.images objectAtIndex:i] name:[NSString stringWithFormat:@"%@%d", @"image", i]];
+        for (int i = 0; i < apiRequest.files.count; i ++) {
+            [formData appendPartWithFormData:[apiRequest.files objectAtIndex:i] name:[NSString stringWithFormat:@"%@%d", @"image", i]];
         }
         [formData appendPartWithFormData:[[apiRequest.parameters toJsonString] dataUsingEncoding:NSUTF8StringEncoding] name:@"paramter"];
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {

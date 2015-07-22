@@ -22,4 +22,17 @@
     return jsonString;
 }
 
+- (NSDictionary *)toWebServerParameters {
+    return @{@"version":@"1.0", @"encoding":@"UTF-8", @"entity":@{@"model":self}};
+}
+
+- (NSString *)assembleParameters {
+    NSMutableArray *parts = [NSMutableArray array];
+    for (NSString *key in [self allKeys]) {
+        NSString *part = [NSString stringWithFormat:@"%@=%@", key, [self valueForKey:key]];
+        [parts addObject: part];
+    }
+    return [parts componentsJoinedByString: @"&"];
+}
+
 @end

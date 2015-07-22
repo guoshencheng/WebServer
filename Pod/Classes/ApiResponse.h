@@ -17,8 +17,7 @@
 @property (nonatomic, strong) NSString *errorMsg;
 @property (nonatomic, strong) NSDictionary *entity;
 
-+ (instancetype)getResponseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error;
-+ (instancetype)postResponseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error;
++ (instancetype)responseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error;
 
 - (BOOL)success;
 - (BOOL)sessionTimeout;
