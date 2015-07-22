@@ -31,68 +31,12 @@
     return  request;
 }
 
-+ (instancetype)requestForGetAllUserAllStatus {
++ (instancetype)requestForRelogin {
     ApiRequest *request = [self defaultRequest];
-    request.url = STATUS_URL;
-    request.parameters = nil;
-    return request;
-}
-
-+ (instancetype)requestForGetAllStatusWithId:(NSInteger)userId {
-    ApiRequest *request = [self defaultRequest];
-    request.url = [NSString stringWithFormat:STATUS_USERID_URL, userId];
-    request.parameters = nil;
-    return request;
-}
-
-+ (instancetype)requestForLoginWithUserId:(NSString *)userId nickName:(NSString *)nickName avatarUrl:(NSString *)avatarUrl {
-    ApiRequest *request = [self defaultRequest];
-    request.method = ApiRequestMethodPost;
-    request.url = LOGIN_URL;
-    NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
-    [dic setValue:userId forKey:@"userId"];
-    [dic setValue:nickName forKey:@"nickName"];
-    [dic setValue:avatarUrl forKey:@"avatarUrl"];
-    request.parameters = [ApiRequest createPostParametersWithParameters:dic];
-    return request;
-}
-
-+ (instancetype)requestForCreateStatusWithDetails:(NSString *)details location:(NSString *)location imageUrls:(NSArray *)imageUrls {
-    ApiRequest *request = [self defaultRequest];
-    request.method = ApiRequestMethodPost;
-    request.url = STATUS_URL;
-    NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
-    [dic setValue:details forKey:@"details"];
-    [dic setValue:location forKey:@"location"];
-    [dic setValue:imageUrls forKey:@"imageUrls"];
-    [dic setValue:@(round([[NSDate date] timeIntervalSince1970] * 1000.0)) forKey:@"referTime"];
-    request.parameters = [ApiRequest createPostParametersWithParameters:dic];
-    return request;
-}
-
-+ (instancetype)requestForUploadPictureWithUserId:(NSString *)userId andImage:(UIImage *)image {
-    ApiRequest *request = [self defaultRequest];
-    request.method = ApiRequestMethodPost;
-    request.url = IMAGE_URL;
-    NSMutableDictionary *dic = [[NSMutableDictionary alloc] init];
-    [dic setValue:userId forKey:@"userId"];
-    [dic setValue:@((NSInteger)([[NSDate date] timeIntervalSince1970] * 1000)) forKey:@"referTime"];
-    NSString *imageString =  [UIImageJPEGRepresentation(image, 0.2) base64EncodedString];
-    [dic setValue:imageString forKey:@"imageString"];
-    request.parameters = [ApiRequest createPostParametersWithParameters:dic];
-    return request;
-}
-
-+ (instancetype)requestForMutipartUploadWithPaths:(NSArray *)images {
-    ApiRequest *request = [self defaultRequest];
-    request.method = ApiRequestMethodMutipartPost;
-    request.url = MUTIPART_FILE_UPLOAD_URL;
-    request.parameters = [ApiRequest createPostParametersWithParameters:@{}];
-    request.images = [[NSMutableArray alloc] init];
-    for (UIImage *image in images) {
-        [request.images addObject:[[UIImageJPEGRepresentation(image, 0.2) base64EncodedString] dataUsingEncoding:NSUTF8StringEncoding]];
-    }
-    return request;
+    /**
+     add some init funtion for request configuration With Onwer Info
+     **/
+    return  request;
 }
 
 #pragma mark - Private Methods

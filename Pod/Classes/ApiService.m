@@ -8,8 +8,7 @@
 
 #import "ApiService.h"
 #import "AFNetworking.h"
-#import "NSDictionary+Utility.h"
-#import "Owener+DataManager.h"
+#import "NSDictionary+WebServer.h"
 
 @interface ApiService () {
     NSOperationQueue *_requestQueue;
@@ -37,8 +36,7 @@
 }
 
 - (void)sendReLoginWithRequest:(ApiRequest *)apiRequest {
-    Owener *owner = [Owener getOwenserInfomation];
-    [self sendPostRequest:[ApiRequest requestForLoginWithUserId:[owner.userId stringValue] nickName:owner.nickName avatarUrl:owner.avatarUrl] withCompletion:^(id data, NSError *error) {
+    [self sendPostRequest:[ApiRequest requestForRelogin] withCompletion:^(id data, NSError *error) {
         ApiResponse *apiResponse = [ApiResponse postResponseWithDictionary:data error:error];
         if ([apiResponse success]) {
             [self sendRequest:apiRequest];
@@ -61,7 +59,6 @@
                 [self.delegate service:self didFinishRequest:apiRequest withResponse:apiResponse];
             }
         }
-        NSLog(@"%@",dictionary);
     }];
 }
 

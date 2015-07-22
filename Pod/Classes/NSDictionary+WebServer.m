@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 guoshencheng. All rights reserved.
 //
 
-#import "NSDictionary+Utility.h"
+#import "NSDictionary+WebServer.h"
 
-@implementation NSDictionary (Utility)
+@implementation NSDictionary (WebServer)
 
 - (NSString *)toJsonString {
     NSString *jsonString = nil;

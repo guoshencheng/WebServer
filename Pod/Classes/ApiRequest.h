@@ -29,13 +29,6 @@ typedef enum {
 @property (nonatomic, strong) NSMutableArray *images;
 
 + (instancetype)requestForTestServer;
-+ (instancetype)requestForGetAllUserAllStatus;
-+ (instancetype)requestForGetAllStatusWithId:(NSInteger)userId;
-
-+ (instancetype)requestForUploadPictureWithUserId:(NSString *)userId andImage:(UIImage *)image;
-+ (instancetype)requestForLoginWithUserId:(NSString *)userId nickName:(NSString *)nickName avatarUrl:(NSString *)avatarUrl;
-+ (instancetype)requestForCreateStatusWithDetails:(NSString *)details location:(NSString *)location imageUrls:(NSArray *)imageUrls;
-+ (instancetype)requestForMutipartUploadWithPaths:(NSArray *)images;
-- (NSString *)assembleParameters;
++ (instancetype)requestForRelogin;
 
 @end

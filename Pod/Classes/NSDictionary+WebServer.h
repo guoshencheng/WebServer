@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface NSDictionary (Utility)
+@interface NSDictionary (WebServer)
 
 - (NSString *)toJsonString;
 

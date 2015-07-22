@@ -7,7 +7,6 @@
 //
 
 #import "ApiResponse.h"
-#import "StatusTool.h"
 
 @implementation ApiResponse
 
@@ -45,33 +44,6 @@
 }
 - (BOOL)sessionTimeout {
     return [self.errorCode integerValue] == 4096;
-}
-
-
-#pragma mark - DTO Factory
-
-- (NSArray *)statusToolsObjectFactory {
-    NSMutableArray *statusTools = [[NSMutableArray alloc] init];
-    for (int i = 0; i < self.entities.count; i ++) {
-        NSDictionary *entity = [[self.entities objectAtIndex:i] objectForKey:@"model"];
-        NSString *avatarUrl = [entity objectForKey:@"avatarUrl"];
-        NSString *detail = [entity objectForKey:@"details"];
-        NSInteger statusId = [[entity objectForKey:@"id"] integerValue];
-        NSArray *imageUrls = [entity objectForKey:@"imageUrls"];
-        NSString *location = [entity objectForKey:@"location"];
-        NSString *nickName = [entity objectForKey:@"nickName"];
-        CGFloat referTime = [[entity objectForKey:@"referTime"] floatValue];
-        NSString *userId = [entity objectForKey:@"userId"];
-        NSDate *date =  [NSDate dateWithTimeIntervalSince1970:referTime / 1000];
-        StatusTool *statusTool = [StatusTool createWithNickName:nickName selfDecription:detail location:location posterImage:imageUrls sendDate:date avatarUrl:avatarUrl userId:userId statusId:statusId];
-        [statusTools addObject:statusTool];
-    }
-    return statusTools;
-}
-
-- (NSString *)imageUrlResponseFactory {
-    NSDictionary *model = [self.entity objectForKey:@"model"];
-    return [model objectForKey:@"url"];
 }
 
 @end
