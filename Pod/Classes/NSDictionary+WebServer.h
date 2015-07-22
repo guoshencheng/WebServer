@@ -20,4 +20,9 @@
  **/
 - (NSDictionary *)toWebServerParameters;
 
+/**
+ * assemble self
+ **/
+- (NSString *)assembleParameters;
+
 @end
