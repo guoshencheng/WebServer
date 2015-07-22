@@ -19,8 +19,6 @@
 
 + (instancetype)getResponseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error;
 + (instancetype)postResponseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error;
-- (NSArray *)statusToolsObjectFactory;
-- (NSString *)imageUrlResponseFactory;
 
 - (BOOL)success;
 - (BOOL)sessionTimeout;
