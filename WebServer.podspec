@@ -17,12 +17,12 @@ Pod::Spec.new do |s|
                        * Markdown format.
                        * Don't worry about the indent, we strip it!
                        DESC
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/WebServer"
+  s.homepage         = "http://10.0.2.217:7777/shenchengguo/WebServer"
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "guoshencheng" => "648772021@qq.com" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/WebServer.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.source           = { :git => "http://10.0.2.217:7777/shenchengguo/WebServer.git", :tag => s.version.to_s }
+  # s.social_media_url = 'guoshencheng.github.io'
 
   s.platform     = :ios, '7.0'
   s.requires_arc = true
@@ -34,5 +34,5 @@ Pod::Spec.new do |s|
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+    s.dependency 'AFNetworking', '~> 2.5.4'
 end

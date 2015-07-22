@@ -1,0 +1,14 @@
+PODS:
+  - WebServer (0.1.0)
+
+DEPENDENCIES:
+  - WebServer (from `../`)
+
+EXTERNAL SOURCES:
+  WebServer:
+    :path: ../
+
+SPEC CHECKSUMS:
+  WebServer: a5babc602e8f760fde8f9ab47d1e4d3f608f1619
+
+COCOAPODS: 0.38.0
