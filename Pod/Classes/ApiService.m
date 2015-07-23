@@ -36,7 +36,7 @@
 }
 
 - (void)sendReLoginWithRequest:(ApiRequest *)apiRequest {
-    [self sendPostRequest:[ApiRequest requestForRelogin] withCompletion:^(id data, NSError *error) {
+    [self sendPostOrPutRequest:[ApiRequest requestForRelogin] withCompletion:^(id data, NSError *error) {
         ApiResponse *apiResponse = [ApiResponse responseWithDictionary:data error:error];
         if ([apiResponse success]) {
             [self sendRequest:apiRequest];
@@ -68,10 +68,16 @@
             [self sendGetRequest:apiRequest withCompletion:completion];
             break;
         case ApiRequestMethodPost:
-            [self sendPostRequest:apiRequest withCompletion:completion];
+            [self sendPostOrPutRequest:apiRequest withCompletion:completion];
             break;
         case ApiRequestMethodMutipartPost:
             [self sendMutiPartRequest:apiRequest withCompletion:completion];
+            break;
+        case ApiRequestMethodDelete:
+            [self sendDeleteRequest:apiRequest withCompletion:completion];
+            break;
+        case ApiRequestMethodPut:
+            [self sendPostOrPutRequest:apiRequest withCompletion:completion];
             break;
         default:
             break;
@@ -79,51 +85,70 @@
     
 }
 
-- (void)sendMutiPartRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id data, NSError *error))completion {
-    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
-    manger.requestSerializer = [AFHTTPRequestSerializer serializer];
-    manger.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manger POST:apiRequest.url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        for (int i = 0; i < apiRequest.files.count; i ++) {
-            [formData appendPartWithFormData:[apiRequest.files objectAtIndex:i] name:[NSString stringWithFormat:@"%@%d", @"image", i]];
-        }
-        [formData appendPartWithFormData:[[apiRequest.parameters toJsonString] dataUsingEncoding:NSUTF8StringEncoding] name:@"paramter"];
-    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        responseObject = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        completion(responseObject, nil);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        completion(nil, error);
-    }];
-}
-
 - (void)sendGetRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id data, NSError *error))completion {
-    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
-    manger.requestSerializer = [AFHTTPRequestSerializer serializer];
-    manger.responseSerializer = [AFHTTPResponseSerializer serializer];
+    AFHTTPRequestOperationManager *manger = [ApiService createDefaultRequestManger];
     [manger GET:apiRequest.url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        responseObject = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        completion(responseObject, nil);
+        [self handleResponseObject:responseObject withCompletion:completion];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         completion(nil, error);
     }];
 }
 
-- (void)sendPostRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id data, NSError *error))completion {
-    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
-    manger.requestSerializer = [AFHTTPRequestSerializer serializer];
-    manger.responseSerializer = [AFHTTPResponseSerializer serializer];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:apiRequest.url]];
-    [request setHTTPMethod:@"POST"];
-    [request setValue:@"application/x-www-form-urlencoded"
-   forHTTPHeaderField:@"Contsetent-Type"];
-    [request setHTTPBody:[[apiRequest.parameters toJsonString] dataUsingEncoding:NSUTF8StringEncoding]];
+- (void)sendDeleteRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id data, NSError *error))completion {
+    AFHTTPRequestOperationManager *manger = [ApiService createDefaultRequestManger];
+    [manger DELETE:apiRequest.url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [self handleResponseObject:responseObject withCompletion:completion];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        completion(nil, error);
+    }];
+}
+
+- (void)sendPostOrPutRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id data, NSError *error))completion {
+    AFHTTPRequestOperationManager *manger = [ApiService createDefaultRequestManger];
+    NSMutableURLRequest *request = [ApiService createRequestWithApiRequest:apiRequest];
     NSOperation *operation = [manger HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        responseObject = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-        completion(responseObject, nil);
+        [self handleResponseObject:responseObject withCompletion:completion];
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         completion(nil, error);
     }];
     [manger.operationQueue addOperation:operation];
+}
+
+- (void)sendMutiPartRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id data, NSError *error))completion {
+    AFHTTPRequestOperationManager *manger = [ApiService createDefaultRequestManger];
+    [manger POST:apiRequest.url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+        for (int i = 0; i < apiRequest.files.count; i ++) {
+            [formData appendPartWithFormData:[apiRequest.files objectAtIndex:i] name:[NSString stringWithFormat:@"%@%d", @"file", i]];
+        }
+        [formData appendPartWithFormData:[[apiRequest.parameters toJsonString] dataUsingEncoding:NSUTF8StringEncoding] name:@"paramter"];
+    } success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [self handleResponseObject:responseObject withCompletion:completion];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        completion(nil, error);
+    }];
+}
+
+#pragma mark - PrivateMethod
+
+- (void)handleResponseObject:(id)responseObject withCompletion:(void (^)(id data, NSError *error))completion {
+    responseObject = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
+    completion(responseObject, nil);
+}
+
++ (AFHTTPRequestOperationManager *)createDefaultRequestManger {
+    AFHTTPRequestOperationManager *manger = [AFHTTPRequestOperationManager manager];
+    manger.requestSerializer = [AFHTTPRequestSerializer serializer];
+    manger.responseSerializer = [AFHTTPResponseSerializer serializer];
+    return manger;
+}
+
++ (NSMutableURLRequest *)createRequestWithApiRequest:(ApiRequest *)apiRequest {
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:apiRequest.url]];
+    [request setHTTPMethod:((apiRequest.method == ApiRequestMethodPost) ? @"POST": @"PUT")];
+    [request setValue:@"application/x-www-form-urlencoded"
+   forHTTPHeaderField:@"Contsetent-Type"];
+    [request setHTTPBody:[[apiRequest.parameters toJsonString] dataUsingEncoding:NSUTF8StringEncoding]];
+    return request;
 }
 
 @end

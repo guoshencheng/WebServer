@@ -12,6 +12,8 @@ typedef enum {
     ApiRequestMethodGet,
     ApiRequestMethodPost,
     ApiRequestMethodMutipartPost,
+    ApiRequestMethodPut,
+    ApiRequestMethodDelete
 } ApiRequestMethod;
 
 @class ApiRequest;
