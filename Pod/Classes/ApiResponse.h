@@ -6,6 +6,18 @@
 //  Copyright (c) 2015 guoshencheng. All rights reserved.
 //
 
+/**
+ * This is the class which saves response returned from server
+ *
+ * When data returned by AFNetworking, we transform it into NSDictionary and Assign the NSDictionary into this class
+ * This class also provide some function of checking response status
+ * To explan the Response to DTO or Other data models, please new a category maybe called "ApiResponse+Explanation.h&m" and add some function like：
+ - (DTO *)transformIntoDTO {
+ some handler functions
+ return some DTOs;
+ }
+ **/
+
 #import <UIKit/UIKit.h>
 
 typedef enum {

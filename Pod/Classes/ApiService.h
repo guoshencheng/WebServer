@@ -6,6 +6,15 @@
 //  Copyright (c) 2015 guoshencheng. All rights reserved.
 //
 
+/**
+ * This is the class which handles all the API calls to server.
+ *
+ * Basically you first create a service instance by serviceWithDeleate:
+ * then call the endpoint you want and find the callbacks in your delegate methods.
+ * 
+ * To make web server hold a session and relogin if session time out you may create a category Like Apiservice+Relogin.h&m to implement your relogin function, this class provide a public funtion call sendReLoginWithRequest:andLoginRequest to send relogin request
+ **/
+
 #import <Foundation/Foundation.h>
 #import "ApiRequest.h"
 #import "ApiResponse.h"
