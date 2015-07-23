@@ -31,14 +31,4 @@ typedef void (^ConfigureRelogingRequestBlock) (ApiRequest *request);
 @property (nonatomic, strong) NSMutableArray *files;
 @property (nonatomic, strong) NSMutableArray *paths;
 
-/**
-  create relogin request for Apiservice to relogin
- **/
-+ (instancetype)requestForRelogin;
-
-/**
- * configure function for init a relogin request
- **/
-+ (void)setConfigureRelogingRequestBlock:(ConfigureRelogingRequestBlock) configureReloginRequestBlock;
-
 @end

@@ -10,19 +10,4 @@
 
 @implementation ApiRequest
 
-static ConfigureRelogingRequestBlock _configureReloginRequestBlock;
-
-+ (instancetype)requestForRelogin {
-    ApiRequest *request = [[ApiRequest alloc] init];
-    request.method = ApiRequestMethodPost;
-    if (_configureReloginRequestBlock) {
-        _configureReloginRequestBlock(request);
-    }
-    return  request;
-}
-
-+ (void)setConfigureRelogingRequestBlock:(ConfigureRelogingRequestBlock) configureReloginRequestBlock {
-    _configureReloginRequestBlock = configureReloginRequestBlock;
-}
-
 @end
