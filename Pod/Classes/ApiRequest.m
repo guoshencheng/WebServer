@@ -21,4 +21,8 @@ static ConfigureRelogingRequestBlock _configureReloginRequestBlock;
     return  request;
 }
 
++ (void)setConfigureRelogingRequestBlock:(ConfigureRelogingRequestBlock) configureReloginRequestBlock {
+    _configureReloginRequestBlock = configureReloginRequestBlock;
+}
+
 @end

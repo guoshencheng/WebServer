@@ -36,4 +36,9 @@ typedef void (^ConfigureRelogingRequestBlock) (ApiRequest *request);
  **/
 + (instancetype)requestForRelogin;
 
+/**
+ * configure function for init a relogin request
+ **/
++ (void)setConfigureRelogingRequestBlock:(ConfigureRelogingRequestBlock) configureReloginRequestBlock;
+
 @end
