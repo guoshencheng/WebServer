@@ -167,7 +167,7 @@
 
 + (void)appendFormDataWithFiles:(NSArray *)files andFormData:(id<AFMultipartFormData>) formData {
     for (int i = 0; i < files.count; i ++) {
-        [formData appendPartWithFormData:[files objectAtIndex:i] name:[NSString stringWithFormat:@"%@%d", @"file_", i]];
+        [formData appendPartWithFileData:[files objectAtIndex:i] name:[NSString stringWithFormat:@"%@%d", @"file_", i] fileName:[NSString stringWithFormat:@"%@%d", @"file_", i] mimeType:@"png"];
     }
 }
 
