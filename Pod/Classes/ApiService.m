@@ -20,23 +20,35 @@
     return service;
 }
 
-- (void)sendReLoginWithRequest:(ApiRequest *)apiRequest {
-    [self sendPostOrPutRequest:[ApiRequest requestForRelogin] withCompletion:^(id data, NSError *error) {
-        ApiResponse *apiResponse = [ApiResponse responseWithDictionary:data error:error];
-        if ([apiResponse success]) {
-            [self sendRequest:apiRequest];
+- (void)sendReLoginWithRequest:(ApiRequest *)apiRequest andLoginRequest:(ApiRequest *)reloginRequest {
+    [self sendPostOrPutRequest:reloginRequest withCompletion:^(id data, NSError *error) {
+        if (error) {
+            [self sendFailDelegateWithApiRequest:apiRequest andError:error];
+        } else {
+            ApiResponse *apiResponse = [ApiResponse responseWithDictionary:data error:&error];
+            if (error) {
+                [self sendFailDelegateWithApiRequest:apiRequest andError:error];
+            } else {
+                if ([apiResponse success]) {
+                    [self sendRequest:apiRequest];
+                }
+            }
         }
     }];
 }
 
 - (void)sendRequest:(ApiRequest *)apiRequest {
     [self sendRequest:apiRequest withCompletion:^(id dictionary, NSError *error) {
-        ApiResponse *apiResponse = [ApiResponse responseWithDictionary:dictionary error:error];
-        if ([apiResponse sessionTimeout]) {
-            [self sendReLoginWithRequest:apiRequest];
+        if (error) {
+            [self sendFailDelegateWithApiRequest:apiRequest andError:error];
         } else {
-            if ([self.delegate respondsToSelector:@selector(service:didFinishRequest:withResponse:)]) {
-                [self.delegate service:self didFinishRequest:apiRequest withResponse:apiResponse];
+            ApiResponse *apiResponse = [ApiResponse responseWithDictionary:dictionary error:&error];
+            if (!error) {
+                if ([self.delegate respondsToSelector:@selector(service:didFinishRequest:withResponse:)]) {
+                    [self.delegate service:self didFinishRequest:apiRequest withResponse:apiResponse];
+                }
+            } else {
+                [self sendFailDelegateWithApiRequest:apiRequest andError:error];
             }
         }
     }];
@@ -133,8 +145,15 @@
 #pragma mark - PrivateTools
 
 - (void)handleResponseObject:(id)responseObject withCompletion:(void (^)(id data, NSError *error))completion {
-    responseObject = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
-    completion(responseObject, nil);
+    NSError *error = nil;
+    responseObject = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:&error];
+    completion(responseObject, error);
+}
+
+- (void)sendFailDelegateWithApiRequest:(ApiRequest *)apiRequest andError:(NSError *)error {
+    if ([self.delegate respondsToSelector:@selector(service:didFailRequest:withError:)]) {
+        [self.delegate service:self didFailRequest:apiRequest withError:error];
+    }
 }
 
 + (void)appendFormDataWithApiRequest:(ApiRequest *)apiRequest andFormData:(id<AFMultipartFormData>) formData {

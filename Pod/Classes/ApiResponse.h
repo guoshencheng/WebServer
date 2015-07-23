@@ -8,6 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef enum {
+    NotDictionaryFailed = -1000,
+    
+} WebServerErrorFailed;
+
 @interface ApiResponse : NSObject
 
 @property (nonatomic, assign) CGFloat version;
@@ -20,7 +25,7 @@
 /**
  * a Create Function Explan Dictionary into ApiResponse
  **/
-+ (instancetype)responseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error;
++ (instancetype)responseWithDictionary:(NSDictionary *)dictionary error:(NSError **)error;
 
 /**
  * juge if success by errorCode

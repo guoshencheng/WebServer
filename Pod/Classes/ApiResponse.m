@@ -10,10 +10,10 @@
 
 @implementation ApiResponse
 
-+ (instancetype)responseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error {
++ (instancetype)responseWithDictionary:(NSDictionary *)dictionary error:(NSError **)error {
     ApiResponse *response = [[self alloc] init];
-    if (error || ![dictionary isKindOfClass:[NSDictionary class]]) {
-        
+    if (![dictionary isKindOfClass:[NSDictionary class]]) {
+        *error = [NSError errorWithDomain:NSCocoaErrorDomain code:NotDictionaryFailed userInfo:@{NSLocalizedDescriptionKey : @"return data is not a class of dictionary"}];
     } else  {
         response.version = [[dictionary objectForKey:@"version"] floatValue];
         response.encoding = [dictionary objectForKey:@"encoding"];

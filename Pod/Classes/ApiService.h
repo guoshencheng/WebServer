@@ -24,7 +24,7 @@
 /**
  * A public function for relogin and send last request
  **/
-- (void)sendReLoginWithRequest:(ApiRequest *)apiRequest;
+- (void)sendReLoginWithRequest:(ApiRequest *)apiRequest andLoginRequest:(ApiRequest *)reloginRequest;
 
 /**
  * A public function for sendRequest
@@ -45,5 +45,7 @@
  * delegate to send message when ApiService had got final response
  **/
 - (void)service:(ApiService *)service didFinishRequest:(ApiRequest *)request withResponse:(ApiResponse *)response;
+
+- (void)service:(ApiService *)service didFailRequest:(ApiRequest *)request withError:(NSError *)error;
 
 @end
