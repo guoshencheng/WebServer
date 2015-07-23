@@ -10,22 +10,7 @@
 #import "AFNetworking.h"
 #import "NSDictionary+WebServer.h"
 
-@interface ApiService () {
-    NSOperationQueue *_requestQueue;
-}
-
-@end
-
 @implementation ApiService
-
-#pragma mark - Object Lifecycle
-
-- (id)init {
-    if (self = [super init]) {
-        _requestQueue = [[NSOperationQueue alloc] init];
-    }
-    return self;
-}
 
 #pragma mark - Public Methods
 
@@ -59,6 +44,9 @@
 
 #pragma mark - Private Methods
 
+/**
+ * The function is a router juge by apiRequest.method
+ **/
 - (void)sendRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id dictionary, NSError *error))completion {
     if ([self.delegate respondsToSelector:@selector(service:willStartRequest:)]) {
         [self.delegate service:self willStartRequest:apiRequest];
@@ -85,6 +73,10 @@
     
 }
 
+/**
+ * The Function send a Get Requst
+ * To use the function, Url should confirm when ApiRequst Object created
+ **/
 - (void)sendGetRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id data, NSError *error))completion {
     AFHTTPRequestOperationManager *manger = [ApiService createDefaultRequestManger];
     [manger GET:apiRequest.url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -94,6 +86,10 @@
     }];
 }
 
+/**
+ * The Function send a Delete Requst
+ * To use the function, Url should confirm when ApiRequst Object created
+ **/
 - (void)sendDeleteRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id data, NSError *error))completion {
     AFHTTPRequestOperationManager *manger = [ApiService createDefaultRequestManger];
     [manger DELETE:apiRequest.url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -103,6 +99,10 @@
     }];
 }
 
+/**
+ * The Function send a Post or Put Requst
+ * It will auto juge Post or Put type by ApiRequest.method and transform paramter into JSon and add it into body
+ **/
 - (void)sendPostOrPutRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id data, NSError *error))completion {
     AFHTTPRequestOperationManager *manger = [ApiService createDefaultRequestManger];
     NSMutableURLRequest *request = [ApiService createRequestWithApiRequest:apiRequest];
@@ -114,12 +114,14 @@
     [manger.operationQueue addOperation:operation];
 }
 
+/**
+ * The Function send a Mutipart Requst
+ * It will auto juge path or filedata type by ApiRequst.files or paths and append those into formdata
+ **/
 - (void)sendMutiPartRequest:(ApiRequest *)apiRequest withCompletion:(void (^)(id data, NSError *error))completion {
     AFHTTPRequestOperationManager *manger = [ApiService createDefaultRequestManger];
     [manger POST:apiRequest.url parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-        for (int i = 0; i < apiRequest.files.count; i ++) {
-            [formData appendPartWithFormData:[apiRequest.files objectAtIndex:i] name:[NSString stringWithFormat:@"%@%d", @"file", i]];
-        }
+        [ApiService appendFormDataWithApiRequest:apiRequest andFormData:formData];
         [formData appendPartWithFormData:[[apiRequest.parameters toJsonString] dataUsingEncoding:NSUTF8StringEncoding] name:@"paramter"];
     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
         [self handleResponseObject:responseObject withCompletion:completion];
@@ -128,11 +130,32 @@
     }];
 }
 
-#pragma mark - PrivateMethod
+#pragma mark - PrivateTools
 
 - (void)handleResponseObject:(id)responseObject withCompletion:(void (^)(id data, NSError *error))completion {
     responseObject = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingAllowFragments error:nil];
     completion(responseObject, nil);
+}
+
++ (void)appendFormDataWithApiRequest:(ApiRequest *)apiRequest andFormData:(id<AFMultipartFormData>) formData {
+    if (apiRequest.files && apiRequest.files.count > 0) {
+        [ApiService appendFormDataWithFiles:apiRequest.files andFormData:formData];
+    }
+    if (apiRequest.paths && apiRequest.paths.count > 0) {
+        [ApiService appendFormDataWithPath:apiRequest.paths andFormData:formData];
+    }
+}
+
++ (void)appendFormDataWithFiles:(NSArray *)files andFormData:(id<AFMultipartFormData>) formData {
+    for (int i = 0; i < files.count; i ++) {
+        [formData appendPartWithFormData:[files objectAtIndex:i] name:[NSString stringWithFormat:@"%@%d", @"file_", i]];
+    }
+}
+
++ (void)appendFormDataWithPath:(NSArray *)paths andFormData:(id<AFMultipartFormData>) formData {
+    for (int i = 0; i < paths.count; i ++) {
+        [formData appendPartWithFileURL:[paths objectAtIndex:i] name:[NSString stringWithFormat:@"%@%d", @"file_for_path_", i] error:nil];
+    }
 }
 
 + (AFHTTPRequestOperationManager *)createDefaultRequestManger {

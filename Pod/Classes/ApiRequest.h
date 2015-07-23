@@ -29,6 +29,7 @@ typedef void (^ConfigureRelogingRequestBlock) (ApiRequest *request);
 @property (nonatomic, strong) NSDictionary *parameters;
 @property (nonatomic, assign) ApiRequestMethod method;
 @property (nonatomic, strong) NSMutableArray *files;
+@property (nonatomic, strong) NSMutableArray *paths;
 
 /**
   create relogin request for Apiservice to relogin

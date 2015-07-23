@@ -17,9 +17,19 @@
 @property (nonatomic, strong) NSString *errorMsg;
 @property (nonatomic, strong) NSDictionary *entity;
 
+/**
+ * a Create Function Explan Dictionary into ApiResponse
+ **/
 + (instancetype)responseWithDictionary:(NSDictionary *)dictionary error:(NSError *)error;
 
+/**
+ * juge if success by errorCode
+ **/
 - (BOOL)success;
+
+/**
+ * juge if sessionTimeout by errorCode
+ **/
 - (BOOL)sessionTimeout;
 
 @end
