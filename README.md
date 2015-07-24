@@ -29,10 +29,10 @@ you may add some function like:
 
 ```objc
 + (instancetype)requestForTestServer {
-ApiRequest *request = [self defaultRequest];
-request.url = URL;
-request.parameters = @{@"id":@"books" };
-return  request;
+    ApiRequest *request = [self defaultRequest];
+    request.url = URL;
+    request.parameters = @{@"id":@"books" };
+    return  request;
 }
 ```
 ApiResponse+Explanation.h&m
@@ -40,8 +40,8 @@ you may add some function like:
 
 ```objc
 - (NSString *)imageUrlResponseFactory {
-NSDictionary *model = [self.entity objectForKey:@"model"];
-return [model objectForKey:@"url"];
+    NSDictionary *model = [self.entity objectForKey:@"model"];
+    return [model objectForKey:@"url"];
 }
 ```
 if you want to make service custom and handle relogin,  you may add a service category like ApiService+Relogin.h&m
@@ -49,13 +49,13 @@ you may add some function like:
 
 ```objc
 - (BOOL)handleResponse:(ApiResponse *)apiResponse reloginIfNecessaryWithApiRequest:(ApiRequest *)apiRequest {
-if ([apiResponse sessionTimeout]) {
-Owener *owner = [Owener getOwenserInfomation];
-[self sendReLoginWithRequest:apiRequest andLoginRequest:[ApiRequest requestForLoginWithUserId:[owner.userId stringValue] nickName:owner.nickName avatarUrl:owner.avatarUrl]];
-return YES;
-} else {
-return NO;
-}
+    if ([apiResponse sessionTimeout]) {
+        Owener *owner = [Owener getOwenserInfomation];
+        [self sendReLoginWithRequest:apiRequest andLoginRequest:[ApiRequest requestForLoginWithUserId:[owner.userId stringValue] nickName:owner.nickName avatarUrl:owner.avatarUrl]];
+        return YES;
+    } else {
+        return NO;
+    }   
 }
 
 ```
@@ -68,10 +68,10 @@ ApiRequest+BulidFactory.h&m
 
 ```objc
 + (instancetype)requestForTestServer {
-ApiRequest *request = [self defaultRequest];
-request.url = URL;
-request.parameters = @{@"id":@"books" };
-return  request;
+    ApiRequest *request = [self defaultRequest];
+    request.url = URL;
+    request.parameters = @{@"id":@"books" };
+    return  request;
 }
 ```
 ApiResponse+Explanation.h&m
@@ -79,8 +79,8 @@ ApiResponse+Explanation.h&m
 
 ```objc
 - (NSString *)imageUrlResponseFactory {
-NSDictionary *model = [self.entity objectForKey:@"model"];
-return [model objectForKey:@"url"];
+    NSDictionary *model = [self.entity objectForKey:@"model"];
+    return [model objectForKey:@"url"];
 }
 ```
 如果你想处理一些自定义ApiService，比如加上重登陆的方法，你可能需要增加一个扩展类比如 ApiService+Relogin.h&m
@@ -88,13 +88,13 @@ return [model objectForKey:@"url"];
 
 ```objc
 - (BOOL)handleResponse:(ApiResponse *)apiResponse reloginIfNecessaryWithApiRequest:(ApiRequest *)apiRequest {
-if ([apiResponse sessionTimeout]) {
-Owener *owner = [Owener getOwenserInfomation];
-[self sendReLoginWithRequest:apiRequest andLoginRequest:[ApiRequest requestForLoginWithUserId:[owner.userId stringValue] nickName:owner.nickName avatarUrl:owner.avatarUrl]];
-return YES;
-} else {
-return NO;
-}
+    if ([apiResponse sessionTimeout]) {
+        Owener *owner = [Owener getOwenserInfomation];
+        [self sendReLoginWithRequest:apiRequest andLoginRequest:[ApiRequest requestForLoginWithUserId:[owner.userId stringValue] nickName:owner.nickName avatarUrl:owner.avatarUrl]];
+        return YES;
+    } else {
+        return NO;
+    }
 }
 ```
 
